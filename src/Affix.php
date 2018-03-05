@@ -18,6 +18,12 @@ class Affix
     ];
 
     /**
+     * config
+     * @var array
+     */
+    public $config = [];
+
+    /**
      * Affix constructor.
      * @throws \Exception
      */
