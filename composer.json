@@ -1,0 +1,13 @@
+{
+    "name": "nicoljamie/spaces",
+    "description": "Wrapper for DigitalOceans Spaces",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Jamie Nicol",
+            "email": "jamie.nicol@cigroup.co.uk"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
