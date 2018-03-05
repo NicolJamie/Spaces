@@ -27,7 +27,7 @@ class Affix
             throw new \Exception('AWS SDK not found, please require');
         }
 
-        $this->checkConfig($config);
+        $this->checkConfig();
     }
 
     /**
