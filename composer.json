@@ -8,6 +8,21 @@
             "email": "jamie.nicol@me.com"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "NicolJamie\\Spaces\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "NicolJamie\\Spaces\\SpacesServiceProvider"
+            ],
+            "aliases": {
+                "Spaces": "NicolJamie\\Spaces\\SpacesFacade"
+            }
+        }
+    },
     "minimum-stability": "dev",
     "require": {}
 }
