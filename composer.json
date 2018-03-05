@@ -1,7 +1,6 @@
 {
     "name": "nicoljamie/spaces",
     "description": "Wrapper for DigitalOceans Spaces",
-    "type": "library",
     "authors": [
         {
             "name": "Jamie Nicol",
