@@ -5,6 +5,19 @@ namespace NicolJamie\Spaces;
 class Affix
 {
     /**
+     * details
+     * connection details
+     * @var array
+     */
+    protected $details = [
+        'accessKey',
+        'secretKey',
+        'space',
+        'region',
+        'host'
+    ];
+
+    /**
      * Affix constructor.
      * @throws \Exception
      */
@@ -20,6 +33,27 @@ class Affix
             throw new \Exception('Config File was not found, please create one.');
         }
         
-        print_r($config);
+        $this->checkConfig($config);
+    }
+
+    /**
+     * checkConfig
+     * @param $config
+     *
+     * @throws \Exception
+     */
+    protected function checkConfig($config)
+    {
+        foreach ($this->details as $detail) {
+            if (!isset($config[$detail])) {
+                throw new \Exception($detail . ' is not set, plesae set it');
+            }
+
+            if (is_null($config[$detail])) {
+                throw new \Exception($detail . ' value has not been set, please set it');
+            }
+        }
+
+        return $this->config = $config;
     }
 }
