@@ -26,8 +26,6 @@ class SpacesServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        if (!class_exists('Aws\S3\S3Client')) {
-            throw new  \Exception('AWS SDK is not found, please require');
-        }
+        
     }
 }
