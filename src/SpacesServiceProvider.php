@@ -14,8 +14,8 @@ class SpacesServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__.'/../config/mongo.php' => config_path('mongo.php'),
-        ], 'mongo');
+            __DIR__.'/../config/spaces.php' => config_path('spaces.php'),
+        ], 'spaces');
     }
 
     /**
