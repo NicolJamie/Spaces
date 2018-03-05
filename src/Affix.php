@@ -38,8 +38,10 @@ class Affix
 
     /**
      * checkConfig
+     *
      * @param $config
      *
+     * @return mixed
      * @throws \Exception
      */
     protected function checkConfig($config)
