@@ -13,7 +13,9 @@ class SpacesServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Get settings from the configuration file
+        $this->publishes([
+            __DIR__.'/../config/spaces.php' => config_path('spaces.php'),
+        ], 'spaces');
     }
 
     /**
