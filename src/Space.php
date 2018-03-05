@@ -3,7 +3,10 @@
 namespace NicolJamie\Spaces;
 
 
-class Space
+class Space extends Affix
 {
-
+    public function __construct()
+    {
+        parent::__construct();
+    }
 }

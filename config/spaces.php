@@ -2,7 +2,7 @@
 
 return [
     'accessKey' => null,
-    'secretKey' => null,
+    'secretKey' => env('SPACE_SECRET'),
     'space' => null,
     'region' => null,
     'host' => 'digitaloceanspaces.com'
