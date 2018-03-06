@@ -57,4 +57,9 @@ class Affix
 
         return $this->config = $config;
     }
+
+    protected function connect()
+    {
+
+    }
 }
