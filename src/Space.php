@@ -26,8 +26,6 @@ class Space extends Affix
     public function __construct()
     {
         parent::__construct();
-
-        $this->space = $this->bootConnection();
     }
 
     /**
@@ -40,7 +38,7 @@ class Space extends Affix
         $list = null;
 
         try {
-            $list = $this->space->listBuckets();
+            $list = $this->bootConnection()->listBuckets();
         } catch (S3Exception $exception) {
             return $exception->getMessage();
         }
@@ -64,12 +62,14 @@ class Space extends Affix
 
         $this->setSpace($space);
 
+        $connection = $this->bootConnection();
+
         try {
-            $new = $this->space->createBucket([
+            $new = $connection->createBucket([
                 'Bucket' => $space
             ]);
 
-            $this->space->waitUntil('BucketExists', [
+            $connection->waitUntil('BucketExists', [
                 'Bucket' => $space
             ]);
 
@@ -94,14 +94,5 @@ class Space extends Affix
         }
 
         return $instance;
-    }
-
-    /**
-     * __destruct
-     * @throws \Exception
-     */
-    public function __destruct()
-    {
-        $this->checkConfig();
     }
 }
