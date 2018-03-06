@@ -37,8 +37,6 @@ class Space extends Affix
      */
     public function list($clean = false)
     {
-        $this->setSpace(null);
-
         $list = null;
 
         try {
@@ -47,7 +45,36 @@ class Space extends Affix
             return $exception->getMessage();
         }
 
-        return $list;
+        return $list->toArray();
+    }
+
+    /**
+     * create
+     * Create a new space within the region
+     * @param null $space
+     *
+     * @return array|string
+     * @throws \Exception
+     */
+    public function create($space = null)
+    {
+        if (is_null($space)) {
+            throw new \Exception('no space name has been set, please set one');
+        }
+
+        try {
+            $new = $this->space->createBucket([
+                'Bucket' => $space
+            ]);
+
+            $this->space->waitUntil('BucketExists', [
+                'Bucket' => $space
+            ]);
+        } catch (S3Exception $exception) {
+            return $exception->getMessage();
+        }
+
+        return $new->toArray();
     }
 
     /**
