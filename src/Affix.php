@@ -2,6 +2,9 @@
 
 namespace NicolJamie\Spaces;
 
+use Aws\S3\Exception\S3Exception;
+use Aws\S3\S3Client;
+
 class Affix
 {
     /**
@@ -30,7 +33,7 @@ class Affix
      */
     public function __construct()
     {
-        if (!class_exists('Aws\S3\S3Client')) {
+        if ( ! class_exists('Aws\S3\S3Client')) {
             throw new \Exception('AWS SDK not found, please require');
         }
 
@@ -55,11 +58,34 @@ class Affix
             }
         }
 
-        return $this->config = $config;
+        // Determine endPoint
+        $this->config['endPoint'] = 'https://' . $config['space'] . '.' . $conig['region'] . '.' .$config['host'];
+
+        dd($this->config);
+
+        $this->config = $config;
     }
 
-    protected function connect()
+    /**
+     * bootConnection
+     * Boots the main connection to the space
+     * @return string
+     */
+    protected function bootConnection()
     {
-
+        try {
+            $s3 = new S3Client([
+                'region' => $this->config['regiion'],
+                'version' => 'latest',
+                'endpoint' => $endpoint,
+                'credentials' => [
+                    'key'    => $access_key,
+                    'secret' => $secret_key,
+                ],
+                'bucket_endpoint' => true
+            ]);
+        } catch (S3Exception $exception) {
+            return $exception->getMessage();
+        }
     }
 }
