@@ -2,8 +2,8 @@
 
 namespace NicolJamie\Spaces;
 
-use Aws\S3\Exception\S3Exception;
 use Aws\S3\S3Client;
+use Aws\S3\Exception\S3Exception;
 
 class Affix
 {
@@ -33,7 +33,7 @@ class Affix
      */
     public function __construct()
     {
-        if ( ! class_exists('Aws\S3\S3Client')) {
+        if (!class_exists('Aws\S3\S3Client')) {
             throw new \Exception('AWS SDK not found, please require');
         }
 
@@ -58,34 +58,72 @@ class Affix
             }
         }
 
-        // Determine endPoint
-        $this->config['endPoint'] = 'https://' . $config['space'] . '.' . $conig['region'] . '.' .$config['host'];
-
-        dd($this->config);
-
         $this->config = $config;
+        $this->endPoint();
+
+        return $this->config;
+    }
+
+    /**
+     * setSpace
+     * Override the space
+     * @param null $space
+     *
+     * @return string
+     */
+    public function setSpace($space = null)
+    {
+        if (!is_null($space) && is_string($space)) {
+            $this->config['space'] = $space;
+            $this->endPoint();
+        }
+    }
+
+    /**
+     * setRegion
+     * Override the region
+     * @param null $region
+     */
+    public function setRegion($region = null)
+    {
+        if  (is_null($region) && is_string($region)) {
+            $this->config['region'] = $region;
+            $this->endPoint();
+        }
+    }
+
+    /**
+     * endPoint
+     * Works out end point from config
+     * @return string
+     */
+    protected function endPoint()
+    {
+        $this->config['endPoint'] = 'https://' . $this->config['space'] . '.' . $this->config['region'] . '.' . $this->config['host'];
     }
 
     /**
      * bootConnection
      * Boots the main connection to the space
-     * @return string
+     * @return S3Client|string
      */
     protected function bootConnection()
     {
         try {
             $s3 = new S3Client([
-                'region' => $this->config['regiion'],
+                'region' => $this->config['region'],
                 'version' => 'latest',
-                'endpoint' => $endpoint,
+                'endpoint' => $this->config['endPoint'],
                 'credentials' => [
-                    'key'    => $access_key,
-                    'secret' => $secret_key,
+                    'key'    => $this->config['accessKey'],
+                    'secret' => $this->config['secretKey'],
                 ],
                 'bucket_endpoint' => true
             ]);
         } catch (S3Exception $exception) {
             return $exception->getMessage();
         }
+
+        return $s3;
     }
 }
