@@ -62,6 +62,8 @@ class Space extends Affix
             throw new \Exception('no space name has been set, please set one');
         }
 
+        $this->setSpace($space);
+
         try {
             $new = $this->space->createBucket([
                 'Bucket' => $space
@@ -70,11 +72,12 @@ class Space extends Affix
             $this->space->waitUntil('BucketExists', [
                 'Bucket' => $space
             ]);
+
         } catch (S3Exception $exception) {
             return $exception->getMessage();
         }
 
-        return $new->toArray();
+        return $new;
     }
 
     /**
@@ -91,5 +94,14 @@ class Space extends Affix
         }
 
         return $instance;
+    }
+
+    /**
+     * __destruct
+     * @throws \Exception
+     */
+    public function __destruct()
+    {
+        $this->checkConfig();
     }
 }
