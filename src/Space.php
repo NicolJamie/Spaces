@@ -3,6 +3,8 @@
 namespace NicolJamie\Spaces;
 
 
+use Aws\S3\Exception\S3Exception;
+
 class Space extends Affix
 {
     /**
@@ -31,10 +33,21 @@ class Space extends Affix
     /**
      * list
      * List all Spaces within the given region
+     * @return \Aws\Result|null|string
      */
-    public function list()
+    public function list($clean = false)
     {
-        dd($this->config);
+        $this->setSpace(null);
+
+        $list = null;
+
+        try {
+            $list = $this->space->listBuckets();
+        } catch (S3Exception $exception) {
+            return $exception->getMessage();
+        }
+
+        return $list;
     }
 
     /**
