@@ -71,7 +71,7 @@ class Affix
      *
      * @return string
      */
-    public function setSpace($space = null)
+    protected function setSpace($space = null)
     {
         if (!is_null($space) && is_string($space)) {
             $this->config['space'] = $space;
@@ -84,7 +84,7 @@ class Affix
      * Override the region
      * @param null $region
      */
-    public function setRegion($region = null)
+    protected function setRegion($region = null)
     {
         if  (is_null($region) && is_string($region)) {
             $this->config['region'] = $region;
