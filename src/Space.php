@@ -60,7 +60,7 @@ class Space extends Affix
             throw new \Exception('no space name has been set, please set one');
         }
 
-        $this->setSpace($space);
+        $this->set('space', $space);
 
         $connection = $this->bootConnection();
 
@@ -78,6 +78,34 @@ class Space extends Affix
         }
 
         return $new;
+    }
+
+    /**
+     * set
+     * Sets a setting for the space
+     * @param null $set
+     * @param null $value
+     *
+     * @throws \Exception
+     */
+    public function set($set = null, $value = null)
+    {
+        if (is_null($set)) {
+            throw new \Exception('set cannot be null, please try again');
+        }
+
+        if (is_null($value)) {
+            throw new \Exception('value cannot be null, please try again');
+        }
+
+        if (!in_array($set, [
+            'space',
+            'region'
+        ])) {
+
+            $set = ucfirst(strtolower($set));
+            $this->set{$set}($value);
+        }
     }
 
     /**
