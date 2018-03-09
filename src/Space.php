@@ -81,6 +81,54 @@ class Space extends Affix
     }
 
     /**
+     * upload
+     * pathToFile - Path of tmp/file
+     * access - public (true) or private (false) {boolean}
+     * saveAs - custom name of file after upload
+     * @param array $args
+     */
+    public function upload($args = [])
+    {
+        if (empty($args)) {
+            throw new  \Exception('Arguments array cannot be emtpy');
+        }
+
+        if (!isset($args['pathToFile']) || empty($args['pathToFile'])) {
+            throw new \Exception('you have to supply the path to the file in order to upload');
+        }
+
+        if (!is_bool($args['access'])) {
+            throw new \Exception('this can only be a boolean ');
+        }
+
+        if (!isset($args['saveAs'])) {
+            $args['saveAs'] = $args['pathToFile'];
+        }
+
+        $connection = $this->bootConnection();
+
+        try {
+
+            $upload = $connection->upload(
+                $this->config['space'],
+                $args['saveAs'],
+                fopen($pathToFile, 'r+'),
+                $args['access'] ? 'public-read' : 'private'
+            );
+
+            $connection->waitUntil('ObjectExists', [
+               'Bucket' => $this->config['space'],
+               'Key' => $args['saveAs']
+            ]);
+
+            return $upload;
+
+        } catch (\Exception $exception) {
+            return $exception->getMessage();
+        }
+    }
+
+    /**
      * set
      * Sets a setting for the space
      * @param null $set
