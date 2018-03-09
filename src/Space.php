@@ -102,10 +102,11 @@ class Space extends Affix
             'space',
             'region'
         ])) {
-
-            $set = ucfirst(strtolower($set));
-            $this->set{$set}($value);
+            throw new \Exception('there is no setting for this.');
         }
+
+        $set = ucfirst(strtolower($set));
+        $this->{'set' . $set}($value);
     }
 
     /**
