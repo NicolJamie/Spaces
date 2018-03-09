@@ -112,7 +112,7 @@ class Space extends Affix
             $upload = $connection->upload(
                 $this->config['space'],
                 $args['saveAs'],
-                fopen($pathToFile, 'r+'),
+                fopen($args['pathToFile'], 'r+'),
                 $args['access'] ? 'public-read' : 'private'
             );
 
@@ -126,6 +126,26 @@ class Space extends Affix
         } catch (\Exception $exception) {
             return $exception->getMessage();
         }
+    }
+
+    /**
+     * remove
+     * Removes a file from the given space
+     * @param null $file
+     *
+     * @return \Aws\Result
+     * @throws \Exception
+     */
+    public function remove($file = null)
+    {
+        if (is_null($file)) {
+            throw new \Exception('File cannot be null');
+        }
+
+        return $this->bootConnection()->deleteObject([
+            'Bucket' => $this->config['space'],
+            'Key' => $file
+        ]);
     }
 
     /**
