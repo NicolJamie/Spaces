@@ -2,7 +2,6 @@
 
 namespace NicolJamie\Spaces;
 
-
 use Aws\S3\Exception\S3Exception;
 
 class Space extends Affix
@@ -20,6 +19,12 @@ class Space extends Affix
     public $space;
 
     /**
+     * call
+     * @var
+     */
+    public $call;
+
+    /**
      * Space constructor.
      * @throws \Exception
      */
@@ -31,6 +36,9 @@ class Space extends Affix
     /**
      * list
      * List all Spaces within the given region
+     *
+     * @param bool $clean
+     *
      * @return \Aws\Result|null|string
      */
     public function list($clean = false)
@@ -49,28 +57,29 @@ class Space extends Affix
     /**
      * create
      * Create a new space within the region
-     * @param null $space
+     *
+     * @param array $args
      *
      * @return array|string
      * @throws \Exception
      */
-    public function create($space = null)
+    public function create($args = [])
     {
-        if (is_null($space)) {
-            throw new \Exception('no space name has been set, please set one');
-        }
+        $this->call = 'create';
 
-        $this->set('space', $space);
+        SpaceException::inspect($args, $command);
+
+        $this->set('space', $args['space']);
 
         $connection = $this->bootConnection();
 
         try {
             $new = $connection->createBucket([
-                'Bucket' => $space
+                'Bucket' => $args['space']
             ]);
 
             $connection->waitUntil('BucketExists', [
-                'Bucket' => $space
+                'Bucket' => $args['space']
             ]);
 
         } catch (S3Exception $exception) {
@@ -85,7 +94,11 @@ class Space extends Affix
      * pathToFile - Path of tmp/file
      * access - public (true) or private (false) {boolean}
      * saveAs - custom name of file after upload
+     *
      * @param array $args
+     *
+     * @return string
+     * @throws \Exception
      */
     public function upload($args = [])
     {
@@ -126,6 +139,16 @@ class Space extends Affix
         } catch (\Exception $exception) {
             return $exception->getMessage();
         }
+    }
+
+    public function fetch($args = [])
+    {
+        if (!isset($args['key'])) {
+            throw new \Exception('No key has been specified');
+        }
+
+
+
     }
 
     /**
