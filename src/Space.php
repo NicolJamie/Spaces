@@ -195,7 +195,7 @@ class Space extends Affix
 
         if (!in_array($args['set'], [
             'space',
-            'region'
+            'region',
         ])) {
             throw new \Exception('there is no setting for this.');
         }
