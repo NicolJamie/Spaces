@@ -65,9 +65,7 @@ class Space extends Affix
      */
     public function create($args = [])
     {
-        $this->call = 'create';
-
-        SpaceException::inspect($args, $command);
+        SpaceException::inspect($args, 'create');
 
         $this->set('space', $args['space']);
 

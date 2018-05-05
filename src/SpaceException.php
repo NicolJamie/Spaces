@@ -3,8 +3,17 @@ namespace NicolJamie\Spaces;
 
 abstract class SpaceException
 {
+    /**
+     * command and exceptions
+     * @var array
+     */
     protected static $exceptions = [
-        'create' => ['space']
+        'create' => ['space'],
+        'upload' => [
+            'pathToFile',
+            'access',
+        ],
+
     ];
 
     /**
@@ -19,9 +28,20 @@ abstract class SpaceException
             throw new \Exception('Command has not been specified');
         }
 
-        foreach (self::$exceptions as $command => $exception) {
-            
+        // Loop and check exceptions
+        foreach (self::$exceptions[$command] as $com => $exception) {
+            if (!in_array($exception, $inspect)) {
+                throw new \Exception($exception .  ' has not been found in the passed variables');
+            }
 
+            if (empty($inspect[$exception])) {
+                throw new \Exception($exception .  ' does not contain any data');
+            }
+        }
+
+        // Upload specific error
+        if ($command === 'upload' && !is_bool($inspect['access'])) {
+            throw new \Exception('Access needs to be type boolean');
         }
     }
 }
