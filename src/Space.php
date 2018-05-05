@@ -129,6 +129,17 @@ class Space extends Affix
     }
 
     /**
+     * @param array $args
+     * @param bool $upload
+     *
+     * @throws \Exception
+     */
+    public function directory($args = [], $upload = true)
+    {
+        SpaceException::inspect($args, $upload ? 'upload': 'download');
+    }
+
+    /**
      * fetch
      * Fetches a file from the space
      * fileName - Key located on CDN
