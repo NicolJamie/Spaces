@@ -33,10 +33,6 @@ class Affix
      */
     public function __construct()
     {
-        if (!class_exists('Aws\S3\S3Client')) {
-            throw new \Exception('AWS SDK not found, please require');
-        }
-
         $this->checkConfig();
     }
 
