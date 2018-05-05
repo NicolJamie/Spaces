@@ -109,7 +109,6 @@ class Space extends Affix
         $connection = $this->bootConnection();
 
         try {
-
             $upload = $connection->upload(
                 $this->config['space'],
                 $args['saveAs'],
