@@ -17,7 +17,9 @@ abstract class SpaceException
         'set' => [
             'set',
             'value'
-        ]
+        ],
+        'uploadDirectory' => ['directory'],
+        'downloadDirectory' => ['directory'],
     ];
 
     /**

@@ -132,11 +132,23 @@ class Space extends Affix
      * @param array $args
      * @param bool $upload
      *
+     * @return bool
      * @throws \Exception
      */
     public function directory($args = [], $upload = true)
     {
-        SpaceException::inspect($args, $upload ? 'upload': 'download');
+        SpaceException::inspect($args, $upload ? 'uploadDirectory': 'downloadDirectory');
+
+        switch ($upload) {
+            case true:
+                break;
+            case false:
+                break;
+            default:
+                return false;
+        }
+
+        return true;
     }
 
     /**
