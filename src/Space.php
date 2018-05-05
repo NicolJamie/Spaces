@@ -100,17 +100,7 @@ class Space extends Affix
      */
     public function upload($args = [])
     {
-        if (empty($args)) {
-            throw new  \Exception('Arguments array cannot be emtpy');
-        }
-
-        if (!isset($args['pathToFile']) || empty($args['pathToFile'])) {
-            throw new \Exception('you have to supply the path to the file in order to upload');
-        }
-
-        if (!is_bool($args['access'])) {
-            throw new \Exception('this can only be a boolean ');
-        }
+        SpaceException::inspect($args, 'upload');
 
         if (!isset($args['saveAs'])) {
             $args['saveAs'] = $args['pathToFile'];
@@ -139,63 +129,79 @@ class Space extends Affix
         }
     }
 
-    public function fetch($args = [])
+    /**
+     * fetch
+     * Fetches a file from the space
+     * fileName - Key located on CDN
+     * saveAS - Path to download the file to
+     *
+     * @param array $args
+     *
+     * @param bool $saveAs
+     *
+     * @return string
+     * @throws \Exception
+     */
+    public function fetch($args = [], $saveAs = false)
     {
-        if (!isset($args['key'])) {
-            throw new \Exception('No key has been specified');
+        SpaceException::inspect($args, 'fetch');
+
+        $connection = $this->bootConnection();
+
+        try {
+            $result = $connection->getObject([
+                'Bucket' => $this->space,
+                'Key'    => $args['fileName'],
+                'SaveAs' => $args['saveAs']
+            ]);
+
+        } catch (\Exception $exception) {
+            return $exception->getMessage();
         }
 
-
-
+        return $saveAs ? $args['saveAs'] : $result;
     }
 
     /**
      * remove
      * Removes a file from the given space
-     * @param null $file
+     *
+     * @param array $args
      *
      * @return \Aws\Result
      * @throws \Exception
      */
-    public function remove($file = null)
+    public function remove($args = [])
     {
-        if (is_null($file)) {
-            throw new \Exception('File cannot be null');
-        }
+        SpaceException::inspect($args, 'removed');
 
         return $this->bootConnection()->deleteObject([
             'Bucket' => $this->config['space'],
-            'Key' => $file
+            'Key' => $args['file']
         ]);
     }
 
     /**
      * set
      * Sets a setting for the space
-     * @param null $set
-     * @param null $value
+     *
+     * @param array $args
      *
      * @throws \Exception
      */
-    public function set($set = null, $value = null)
+    public function set($args = [])
     {
-        if (is_null($set)) {
-            throw new \Exception('set cannot be null, please try again');
-        }
+        SpaceException::inspect($args, 'set');
 
-        if (is_null($value)) {
-            throw new \Exception('value cannot be null, please try again');
-        }
-
-        if (!in_array($set, [
+        if (!in_array($args['set'], [
             'space',
             'region'
         ])) {
             throw new \Exception('there is no setting for this.');
         }
 
-        $set = ucfirst(strtolower($set));
-        $this->{'set' . $set}($value);
+        $set = ucfirst(strtolower($args['set']));
+        $this->{'set' . $set}($args['value']);
     }
 
     /**

@@ -13,7 +13,11 @@ abstract class SpaceException
             'pathToFile',
             'access',
         ],
-
+        'remove' => ['file'],
+        'set' => [
+            'set',
+            'value'
+        ]
     ];
 
     /**
