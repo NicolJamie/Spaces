@@ -19,10 +19,10 @@ class Space extends Affix
     public $space;
 
     /**
-     * call
-     * @var
+     * connection
+     * @var \Aws\S3\S3Client|string
      */
-    public $call;
+    public $connection;
 
     /**
      * Space constructor.
@@ -31,6 +31,8 @@ class Space extends Affix
     public function __construct()
     {
         parent::__construct();
+
+        $this->connection = $this->bootConnection();
     }
 
     /**
@@ -46,7 +48,7 @@ class Space extends Affix
         $list = null;
 
         try {
-            $list = $this->bootConnection()->listBuckets();
+            $list = $this->connection->listBuckets();
         } catch (S3Exception $exception) {
             return $exception->getMessage();
         }
@@ -69,14 +71,12 @@ class Space extends Affix
 
         $this->set('space', $args['space']);
 
-        $connection = $this->bootConnection();
-
         try {
-            $new = $connection->createBucket([
+            $new = $this->connection->createBucket([
                 'Bucket' => $args['space']
             ]);
 
-            $connection->waitUntil('BucketExists', [
+            $this->connection->waitUntil('BucketExists', [
                 'Bucket' => $args['space']
             ]);
 
@@ -106,17 +106,15 @@ class Space extends Affix
             $args['saveAs'] = $args['pathToFile'];
         }
 
-        $connection = $this->bootConnection();
-
         try {
-            $upload = $connection->upload(
+            $upload = $this->connection->upload(
                 $this->config['space'],
                 $args['saveAs'],
                 fopen($args['pathToFile'], 'r+'),
                 $args['access'] ? 'public-read' : 'private'
             );
 
-            $connection->waitUntil('ObjectExists', [
+            $this->connection->waitUntil('ObjectExists', [
                'Bucket' => $this->config['space'],
                'Key' => $args['saveAs']
             ]);
@@ -168,10 +166,8 @@ class Space extends Affix
     {
         SpaceException::inspect($args, 'fetch');
 
-        $connection = $this->bootConnection();
-
         try {
-            $result = $connection->getObject([
+            $result = $this->connection->getObject([
                 'Bucket' => $this->space,
                 'Key'    => $args['fileName'],
                 'SaveAs' => $args['saveAs']
@@ -195,9 +191,9 @@ class Space extends Affix
      */
     public function remove($args = [])
     {
-        SpaceException::inspect($args, 'removed');
+        SpaceException::inspect($args, 'remove');
 
-        return $this->bootConnection()->deleteObject([
+        return $this->connection->deleteObject([
             'Bucket' => $this->config['space'],
             'Key' => $args['file']
         ]);
