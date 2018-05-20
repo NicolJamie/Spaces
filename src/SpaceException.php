@@ -36,7 +36,7 @@ abstract class SpaceException
 
         // Loop and check exceptions
         foreach (self::$exceptions[$command] as $com => $exception) {
-            if (!in_array($exception, $inspect)) {
+            if (!in_array($exception, array_keys($inspect))) {
                 throw new \Exception($exception .  ' has not been found in the passed variables');
             }
 
