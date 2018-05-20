@@ -191,7 +191,7 @@ class Space extends Affix
      */
     public function remove($args = [])
     {
-        SpaceException::inspect($args, 'removed');
+        SpaceException::inspect($args, 'remove');
 
         return $this->connection->deleteObject([
             'Bucket' => $this->config['space'],
