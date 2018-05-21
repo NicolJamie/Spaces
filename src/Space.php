@@ -102,21 +102,17 @@ class Space extends Affix
     {
         SpaceException::inspect($args, 'upload');
 
-        if (!isset($args['saveAs'])) {
+        if ( ! isset($args['saveAs'])) {
             $args['saveAs'] = $args['pathToFile'];
         }
 
         try {
-            $upload = $this->connection->upload(
-                $this->config['space'],
-                $args['saveAs'],
-                fopen($args['pathToFile'], 'r+'),
-                $args['access'] ? 'public-read' : 'private'
-            );
+            $upload = $this->connection->upload($this->config['space'], $args['saveAs'],
+                fopen($args['pathToFile'], 'r+'), $args['access'] ? 'public-read' : 'private');
 
             $this->connection->waitUntil('ObjectExists', [
-               'Bucket' => $this->config['space'],
-               'Key' => $args['saveAs']
+                'Bucket' => $this->config['space'],
+                'Key'    => $args['saveAs']
             ]);
 
             return $upload;
@@ -135,15 +131,29 @@ class Space extends Affix
      */
     public function directory($args = [], $upload = true)
     {
-        SpaceException::inspect($args, $upload ? 'uploadDirectory': 'downloadDirectory');
+        SpaceException::inspect($args, $upload ? 'uploadDirectory' : 'downloadDirectory');
 
-        switch ($upload) {
-            case true:
-                break;
-            case false:
-                break;
-            default:
-                return false;
+        try {
+            switch ($upload) {
+                case true:
+                    $this->connection->uploadDirectory(
+                        $args['directory'],
+                        $this->config['space'],
+                        ! empty($args['prefix']) ? $args['prefix'] : ''
+                    );
+                    break;
+                case false:
+                    $this->connection->downloadBucket(
+                        $args['directory'],
+                        $this->config['space'],
+                        ! empty($args['prefix']) ? $args['prefix'] : ''
+                    );
+                    break;
+                default:
+                    return false;
+            }
+        } catch (\Exception $exception) {
+            return $exception->getMessage();
         }
 
         return true;
@@ -195,7 +205,7 @@ class Space extends Affix
 
         return $this->connection->deleteObject([
             'Bucket' => $this->config['space'],
-            'Key' => $args['file']
+            'Key'    => $args['file']
         ]);
     }
 
@@ -211,7 +221,7 @@ class Space extends Affix
     {
         SpaceException::inspect($args, 'set');
 
-        if (!in_array($args['set'], [
+        if ( ! in_array($args['set'], [
             'space',
             'region',
         ])) {
