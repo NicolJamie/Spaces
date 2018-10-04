@@ -136,11 +136,11 @@ class Space extends Affix
         try {
             switch ($upload) {
                 case true:
-                    return $this->connection->uploadDirectory([
+                    return $this->connection->uploadDirectory(
                         $args['directory'],
-                        $this->space,
+                        $this->config['space'],
                         $args['prefix']
-                    ]);
+                    );
                     break;
                 case false:
                     break;
@@ -173,7 +173,7 @@ class Space extends Affix
 
         try {
             $result = $this->connection->getObject([
-                'Bucket' => $this->space,
+                'Bucket' => $this->config['space'],
                 'Key'    => $args['fileName'],
                 'SaveAs' => $args['saveAs']
             ]);
