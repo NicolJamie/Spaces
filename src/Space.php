@@ -126,7 +126,7 @@ class Space extends Affix
      * @param array $args
      * @param bool $upload
      *
-     * @return bool
+     * @return bool|\Exception
      * @throws \Exception
      */
     public function directory($args = [], $upload = true)
@@ -136,24 +136,19 @@ class Space extends Affix
         try {
             switch ($upload) {
                 case true:
-                    $this->connection->uploadDirectory(
+                    return $this->connection->uploadDirectory([
                         $args['directory'],
-                        $this->config['space'],
-                        ! empty($args['prefix']) ? $args['prefix'] : ''
-                    );
+                        $this->space,
+                        $args['prefix']
+                    ]);
                     break;
                 case false:
-                    $this->connection->downloadBucket(
-                        $args['directory'],
-                        $this->config['space'],
-                        ! empty($args['prefix']) ? $args['prefix'] : ''
-                    );
                     break;
                 default:
                     return false;
             }
         } catch (\Exception $exception) {
-            return $exception->getMessage();
+            return $exception;
         }
 
         return true;
