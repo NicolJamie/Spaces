@@ -136,13 +136,23 @@ class Space extends Affix
         try {
             switch ($upload) {
                 case true:
+                    $params['before'] = function (\Aws\Command $command) {
+                        $command['ACL'] = 'public-read';
+                    };
+
                     return $this->connection->uploadDirectory(
+                        $args['directory'],
+                        $this->config['space'],
+                        $args['prefix'],
+                        $params
+                    );
+                    break;
+                case false:
+                    return $this->connection->downloadBucket(
                         $args['directory'],
                         $this->config['space'],
                         $args['prefix']
                     );
-                    break;
-                case false:
                     break;
                 default:
                     return false;
