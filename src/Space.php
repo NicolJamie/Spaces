@@ -143,6 +143,11 @@ class Space extends Affix
                     );
                     break;
                 case false:
+                    return $this->connection->downloadBucket(
+                        $args['directory'],
+                        $this->config['space'],
+                        $args['prefix']
+                    );
                     break;
                 default:
                     return false;
